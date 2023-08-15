@@ -5,20 +5,21 @@ import "openzeppelin-contracts/contracts/utils/math/SafeMath.sol";
 contract rng {
     using SafeMath for uint256;
     IUniswapV2Pair[] private lpList;
-    
+    uint256 tips = 1;
     constructor (address[] memory _lp){
         uint lens = _lp.length;
         for (uint i = 0; i < lens; i++){
             lpList.push(IUniswapV2Pair(_lp[i]));
         }
     }
-
-    function rand(uint256 cap) external view returns(uint256){
+    
+    
+    function rand(uint256 cap) external  returns(uint256){
         uint256 _rng = _addLp().add(_addChainTips());
         return _rng % cap; 
     }
 
-    function randEth(uint256 cap) external view returns(uint256){
+    function randEth(uint256 cap) external  returns(uint256){
         uint256 _rng = _addLp().add(_addChainTips()).add(_etherChain());
         return _rng % cap; 
     }
@@ -34,14 +35,15 @@ contract rng {
         return entropy;
     }
 
-    function _addChainTips() view internal returns(uint256){
+    function _addChainTips()  internal returns(uint256){
+        tips++;
         return uint256(keccak256(abi.encodePacked(
             (block.timestamp).add
             (block.basefee).add
             ((uint256(keccak256(abi.encodePacked(block.coinbase))))
              / (block.timestamp)).add
             (block.gaslimit).add
-            (block.number).add
+            (block.number).add(tips).add
             (uint256(keccak256(abi.encodePacked(msg.sender)))))));
     }
 
