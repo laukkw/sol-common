@@ -1,0 +1,3 @@
+[submodule "lib/sol-common"]
+	path = lib/sol-common
+	url = https://github.com/laukkw/sol-common
